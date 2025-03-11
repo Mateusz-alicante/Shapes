@@ -1,127 +1,114 @@
 <!DOCTYPE html>
-<html lang="en-us">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Unity Web Player | Shapes</title>
-    <link rel="shortcut icon" href="TemplateData/favicon.ico">
-    <link rel="stylesheet" href="TemplateData/style.css">
-  </head>
-  <body>
-    <div id="unity-container" class="unity-desktop">
-      <canvas id="unity-canvas" width=1000 height=563 tabindex="-1"></canvas>
-      <div id="unity-loading-bar">
-        <div id="unity-logo"></div>
-        <div id="unity-progress-bar-empty">
-          <div id="unity-progress-bar-full"></div>
-        </div>
-      </div>
-      <div id="unity-warning"> </div>
-      <div id="unity-footer">
-        <div id="unity-logo-title-footer"></div>
-        <div id="unity-fullscreen-button"></div>
-        <div id="unity-build-title">Shapes</div>
-      </div>
+<html>
+<head>
+    <title>My Page with Shapes</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Program:</h1>
+
+    <iframe src="app.html" width="1100" height="700" frameborder="0"></iframe>
+
+    <div>
+        <h1>Guide:</h1>
+
+        <h2>Introduction: </h2>
+            <p>
+                This pages goes over the basic usage of the shape visualization application. 
+                The different sections of this page will go over the different features shown on the figure below.
+                <img src="./intro.png" width="800px" />
+            </p>
+
+        <h2>1. Mode</h2>
+            <p>
+                The "Mode" dropdown allows you to switch between different geometry modes: Three of which correspond to tetrahedrons
+                (A3, B3, C3), and one to cubes.
+            </p>
+            
+        <h2>2. Input</h2>
+            <p>Allows you to select how you want to input character sequences into the program:</p>
+            <li>
+                Normal: After you input the sequence, you can display it by either pressing the 
+                <img src="./paper-plane.png" width="20px" /> button, or by pressing enter.
+            </li>
+            <li>
+                Manual: Best suited for fast prototyping when inputting characters manually instead of coy pasting from somewhere else. 
+                The sequence will be automatically updated as more characters are added to the sequence input (there is no need to press Enter 
+                or the submit button).
+                This mode is slower and performs worse when copying a long sequence from somewhere else: the normal mode is better suited for that.
+            </li>
+            <li>
+                Batch: Best for inspecting large number of sequences. After selecting this mode, press on the "Input" button that appears right next
+                to the dropdown to open a multi-line text input. Paste your sequences into this field, with each sequence being on
+                its own line. Then navigate between the sequences using the "Next" and "Previous" buttons.
+            </li>
+
+        <h2>3. Sequence submission</h2>
+            <p>
+                How your sequence is submitted depends on which mode you have selected. On the "Normal" mode, you will have to press Enter or 
+                <img src="./paper-plane.png" width="20px" /> to display your sequence. In "Manual" and "Batch" modes the sequence will be 
+                automatically shown.
+            </p>
+            <p>
+                You also have the option to animate your sequences by pressing the "animate button". This will slowly build your sequence
+                shape by shape. Once you press this button another input will appear that will allow you to modify how fast the animation is.
+            </p>
+            <p>
+                You may also want to differentiate between different sections of your structure. You can define different 
+                regions of your shape to be drawn in a different color. Input a '|' character between the sections you want to distinguish.
+            </p>
+
+        <h2>4. Sequence input</h2>
+            <p>
+                This is the input field where you will input the characters that build up your sequence. In the "Normal" and "Manual" modes,
+                you can edit this field directly. In the "Batch" mode, this field will be showing the current sequence from your multi-line
+                text input, and you won't be able to edit this field directly.
+            </p>
+        <h2>5. Alternative input buttons</h2>
+                <p>
+                    Instead of editing the text of your sequence directly, you can also add new characters to your sequence by pressing 
+                    the buttons corresponding to each character. Notice the color of these buttons: they correspond to the colors 
+                    of the vertices of the shape upon which the shape will be reflected on for the given transformation.
+                </p>
+                <p>
+                    Press the <img src="./shuffle.png" width="20px" /> button to start a new color region. This will simply add a new '|' 
+                    character to the end of your sequence.
+                </p>
+        <h2>6. Visualization options</h2>
+            <p>The program provides you with different ways of visualizing your shapes:</p>
+            <h3>Path visualization</h3>
+                <p>The "Path" option specifies how to display the path that connects the centers of your shapes. </p>
+                    <li>"Uniform": This option will draw all the paths in the same color.</li>
+                    <li>"No Path": Hides the path so that it is not visible.</li>
+                    <li>
+                        "Reflections": Each element of the path has a color corresponding to the reflection that was applied to the 
+                        corresponding shape.
+                    </li>
+                    <li>
+                        "Regions": The path is colored according to the regions you have defined with the '|' characters in your 
+                        sequence input.
+                    </li>
+            <h3>Shapes visualization</h3>
+            <p>The "Shapes" option specifies how to display the shapes that make up your sequence </p>
+                <li>"Uniform": This option will draw all the paths in the same color.</li>
+                <li>"No Shapes": Hides all the shapes.</li>
+                <li>
+                    "Wireframe": Only shows the edges and vertices of the shape and hides the mesh. This can 
+                    make it easier to see the paths inside the shape.
+                </li>
+                <li>
+                    "Regions": The shapes are colored according to the regions you have defined with the '|' characters in your 
+                    sequence input.
+                </li>
     </div>
-    <script>
-      var canvas = document.querySelector("#unity-canvas");
-
-      // Shows a temporary message banner/ribbon for a few seconds, or
-      // a permanent error message on top of the canvas if type=='error'.
-      // If type=='warning', a yellow highlight color is used.
-      // Modify or remove this function to customize the visually presented
-      // way that non-critical warnings and error messages are presented to the
-      // user.
-      function unityShowBanner(msg, type) {
-        var warningBanner = document.querySelector("#unity-warning");
-        function updateBannerVisibility() {
-          warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
-        }
-        var div = document.createElement('div');
-        div.innerHTML = msg;
-        warningBanner.appendChild(div);
-        if (type == 'error') div.style = 'background: red; padding: 10px;';
-        else {
-          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
-          setTimeout(function() {
-            warningBanner.removeChild(div);
-            updateBannerVisibility();
-          }, 5000);
-        }
-        updateBannerVisibility();
-      }
-
-      var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/shapes_web.loader.js";
-      var config = {
-        arguments: [],
-        dataUrl: buildUrl + "/shapes_web.data",
-        frameworkUrl: buildUrl + "/shapes_web.framework.js",
-        codeUrl: buildUrl + "/shapes_web.wasm",
-        streamingAssetsUrl: "StreamingAssets",
-        companyName: "Mateusz",
-        productName: "Shapes",
-        productVersion: "0.3",
-        showBanner: unityShowBanner,
-      };
-
-      // By default, Unity keeps WebGL canvas render target size matched with
-      // the DOM size of the canvas element (scaled by window.devicePixelRatio)
-      // Set this to false if you want to decouple this synchronization from
-      // happening inside the engine, and you would instead like to size up
-      // the canvas DOM size and WebGL render target sizes yourself.
-      // config.matchWebGLToCanvasSize = false;
-
-      // If you would like all file writes inside Unity Application.persistentDataPath
-      // directory to automatically persist so that the contents are remembered when
-      // the user revisits the site the next time, uncomment the following line:
-      // config.autoSyncPersistentDataPath = true;
-      // This autosyncing is currently not the default behavior to avoid regressing
-      // existing user projects that might rely on the earlier manual
-      // JS_FileSystem_Sync() behavior, but in future Unity version, this will be
-      // expected to change.
-
-      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        // Mobile device style: fill the whole browser client area with the game canvas:
-
-        var meta = document.createElement('meta');
-        meta.name = 'viewport';
-        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
-        document.getElementsByTagName('head')[0].appendChild(meta);
-        document.querySelector("#unity-container").className = "unity-mobile";
-        canvas.className = "unity-mobile";
-
-        // To lower canvas resolution on mobile devices to gain some
-        // performance, uncomment the following line:
-        // config.devicePixelRatio = 1;
-
-
-      } else {
-        // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
-        canvas.style.width = "1000px";
-        canvas.style.height = "563px";
-      }
-
-      document.querySelector("#unity-loading-bar").style.display = "block";
-
-      var script = document.createElement("script");
-      script.src = loaderUrl;
-      script.onload = () => {
-        createUnityInstance(canvas, config, (progress) => {
-          document.querySelector("#unity-progress-bar-full").style.width = 100 * progress + "%";
-              }).then((unityInstance) => {
-                document.querySelector("#unity-loading-bar").style.display = "none";
-                document.querySelector("#unity-fullscreen-button").onclick = () => {
-                  document.makeFullscreen('unity-container');
-                };
-
-              }).catch((message) => {
-                alert(message);
-              });
-            };
-
-      document.body.appendChild(script);
-
-    </script>
-  </body>
+    
+</body>
 </html>
